@@ -14,6 +14,7 @@ func Consumer(ctx context.Context) {
 
 	var err error
 	var rabbitmq *global.Rabbitmq
+	// 初始化并绑定死信队列
 	if rabbitmq, err = utils.InitRabbitmq(global.ExchangeName, global.QueueName, global.RoutingKeyName, utils.InitRabbitmqTable(global.DeadExchangeName, global.DeadRoutingKeyName)); err != nil {
 		global.ZAPLOG.Error("init client queue err --> ", zap.Error(err))
 		return
@@ -37,12 +38,14 @@ func Consumer(ctx context.Context) {
 				global.ZAPLOG.Error("Failed to receive message from channel, exiting...")
 				return
 			}
+			// ack
 			/*if err = data.Acknowledger.Ack(data.DeliveryTag, false); err != nil {
 				global.ZAPLOG.Error("ack err --> ", zap.Error(err))
 			} else {
 				global.ZAPLOG.Info(fmt.Sprintf("acknowledgement ack message --> %s", string(data.Body)))
 			}*/
 
+			// nack
 			if err = data.Acknowledger.Nack(data.DeliveryTag, false, false); err != nil {
 				global.ZAPLOG.Error("acknowledgement nack err --> ", zap.Error(err))
 			}
