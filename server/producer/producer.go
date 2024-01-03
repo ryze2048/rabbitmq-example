@@ -14,7 +14,7 @@ func Producer() {
 
 	var err error
 	var rabbitmq *global.Rabbitmq
-	if rabbitmq, err = utils.InitRabbitmq(global.ExchangeName, global.QueueName, global.RoutingKeyName, nil); err != nil {
+	if rabbitmq, err = utils.InitRabbitmq(global.ExchangeName, global.QueueName, global.RoutingKeyName, utils.InitRabbitmqTable(global.DeadExchangeName, global.DeadRoutingKeyName)); err != nil {
 		global.ZAPLOG.Error("init client queue err --> ", zap.Error(err))
 		return
 	}
