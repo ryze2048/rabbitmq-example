@@ -8,7 +8,7 @@ import (
 
 func InitAmqp() {
 	var err error
-	if global.AMQP, err = amqp.Dial("amqp://admin:123456@127.0.0.1:5672"); err != nil {
+	if global.AMQP, err = amqp.Dial("amqp://root:123456@127.0.0.1:5672"); err != nil {
 		global.ZAPLOG.Error("init amqp client err --> ", zap.Error(err))
 		return
 	}

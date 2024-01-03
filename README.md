@@ -1,3 +1,9 @@
 # rabbitmq-example
 rabbitmq-example
-init project
+
+
+
+
+---
+* Producer 生产者
+* Consumer 消费者
