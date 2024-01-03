@@ -50,9 +50,18 @@ func InitRabbitmqMessage(exchangeName, queueName, routingKey string, table amqp.
 	}
 }
 
+// InitRabbitmqTable 绑定Table信息 - 死信队列
 func InitRabbitmqTable(exchangeName, routingKey string) amqp.Table {
 	return amqp.Table{
 		"x-dead-letter-exchange":    exchangeName, // 指定死信交换机
 		"x-dead-letter-routing-key": routingKey,   // 指定死信routing-key
+	}
+}
+
+// CloseRabbitmqChannel 关闭通道
+func CloseRabbitmqChannel(rabbitmq *global.Rabbitmq) {
+	var err error
+	if err = rabbitmq.Channel.Close(); err != nil {
+		global.ZAPLOG.Error("close rabbitmq channel err --> ", zap.Error(err))
 	}
 }

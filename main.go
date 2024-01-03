@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/ryze2048/rabbitmq-example/global"
 	"github.com/ryze2048/rabbitmq-example/initialize"
+	"github.com/ryze2048/rabbitmq-example/server/consumer"
 	"github.com/ryze2048/rabbitmq-example/server/producer"
 	"os"
 	"os/signal"
@@ -14,10 +15,9 @@ import (
 func main() {
 	initialize.InitLog()
 	initialize.InitAmqp()
-
-	producer.Producer()
 	ctx, cancel := context.WithCancel(context.Background())
-	fmt.Println(ctx)
+	go producer.Producer()
+	go consumer.Consumer(ctx)
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 	for {
