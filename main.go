@@ -6,7 +6,6 @@ import (
 	"github.com/ryze2048/rabbitmq-example/global"
 	"github.com/ryze2048/rabbitmq-example/initialize"
 	"github.com/ryze2048/rabbitmq-example/server/consumer"
-	"github.com/ryze2048/rabbitmq-example/server/dead"
 	"github.com/ryze2048/rabbitmq-example/server/producer"
 	"os"
 	"os/signal"
@@ -19,7 +18,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	go producer.Producer()
 	go consumer.Consumer(ctx)
-	go dead.Dead(ctx)
+	// go dead.Dead(ctx)
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 	for {

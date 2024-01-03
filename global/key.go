@@ -1,9 +1,9 @@
 package global
 
 const (
-	QueueName      string = `info-queue`
-	ExchangeName   string = `info-exchange`
-	RoutingKeyName string = `info-routingKey`
+	QueueName      string = `content-queue`
+	ExchangeName   string = `content-exchange`
+	RoutingKeyName string = `content-routingKey`
 )
 
 const (

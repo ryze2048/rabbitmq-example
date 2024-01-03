@@ -21,7 +21,7 @@ func InitRabbitmq(exchangeName, queueName, routingKey string, table amqp.Table) 
 	}
 
 	//声明交换机
-	if err = rabbitmq.Channel.ExchangeDeclare(exchangeName, amqp.ExchangeDirect, true, false, false, false, nil); err != nil {
+	if err = rabbitmq.Channel.ExchangeDeclare(exchangeName, `x-delayed-message`, true, false, false, false, amqp.Table{"x-delayed-type": "direct"}); err != nil {
 		global.ZAPLOG.Error("init amqp exchange err --> ", zap.Error(err))
 		return nil, err
 	}
