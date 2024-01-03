@@ -1,4 +1,4 @@
-package utils
+package process
 
 import (
 	"github.com/ryze2048/rabbitmq-example/global"
@@ -6,11 +6,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// InitRabbitmq 初始化信息
-// exchangeName 交换机名称
-// queueName 队列名
-// routingKey 路由键
-func InitRabbitmq(exchangeName, queueName, routingKey string, table amqp.Table) (*global.Rabbitmq, error) {
+func InitRabbitmq(exchangeName, queueName, routingKey, kind string, table amqp.Table) (*global.Rabbitmq, error) {
 	var err error
 	rabbitmq := InitRabbitmqMessage(exchangeName, queueName, routingKey, table)
 
@@ -21,7 +17,7 @@ func InitRabbitmq(exchangeName, queueName, routingKey string, table amqp.Table) 
 	}
 
 	//声明交换机
-	if err = rabbitmq.Channel.ExchangeDeclare(exchangeName, `x-delayed-message`, true, false, false, false, amqp.Table{"x-delayed-type": "direct"}); err != nil {
+	if err = rabbitmq.Channel.ExchangeDeclare(exchangeName, kind, true, false, false, false, amqp.Table{"x-delayed-type": "direct"}); err != nil {
 		global.ZAPLOG.Error("init amqp exchange err --> ", zap.Error(err))
 		return nil, err
 	}
@@ -50,18 +46,17 @@ func InitRabbitmqMessage(exchangeName, queueName, routingKey string, table amqp.
 	}
 }
 
-// InitRabbitmqTable 绑定Table信息 - 死信队列
-func InitRabbitmqTable(exchangeName, routingKey string) amqp.Table {
-	return amqp.Table{
-		"x-dead-letter-exchange":    exchangeName, // 指定死信交换机
-		"x-dead-letter-routing-key": routingKey,   // 指定死信routing-key
-	}
-}
-
 // CloseRabbitmqChannel 关闭通道
 func CloseRabbitmqChannel(rabbitmq *global.Rabbitmq) {
 	var err error
 	if err = rabbitmq.Channel.Close(); err != nil {
 		global.ZAPLOG.Error("close rabbitmq channel err --> ", zap.Error(err))
+	}
+}
+
+func InitRabbitmqTable(exchangeName, routingKey string) amqp.Table {
+	return amqp.Table{
+		"x-dead-letter-exchange":    exchangeName, // 指定死信交换机
+		"x-dead-letter-routing-key": routingKey,   // 指定死信routing-key
 	}
 }
