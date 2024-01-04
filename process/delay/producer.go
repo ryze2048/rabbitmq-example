@@ -15,7 +15,7 @@ func (d *Delay) Producer() {
 	global.ZAPLOG.Info(fmt.Sprintf("start automatic producer --> %v", time.Now().Format("2006-01-02 15:04:05")))
 	var err error
 	var rabbitmq *global.Rabbitmq
-	if rabbitmq, err = process.InitRabbitmq(DelayExchangeName, DelayQueueName, DelayRoutingKey, `x-delayed-message`, nil); err != nil {
+	if rabbitmq, err = process.InitRabbitmq(DelayExchangeName, DelayQueueName, DelayRoutingKey, `x-delayed-message`, process.InitRabbitmqTable(DelayDeadExchangeName, DelayDeadRoutingKey)); err != nil {
 		global.ZAPLOG.Error("init client queue err --> ", zap.Error(err))
 		return
 	}
@@ -27,6 +27,7 @@ func (d *Delay) Producer() {
 			ContentType: "text/plain",
 			Headers:     amqp.Table{"x-delay": 5000}, // 设置延迟时间，单位为毫秒
 			Body:        []byte(strconv.Itoa(i)),
+			Expiration:  "10000", // 设置 TTL 为 10 秒
 		})
 
 		global.ZAPLOG.Info(fmt.Sprintf("producer time --> %v, body info --> %s", time.Now().Format("2006-01-02 15:04:05"), strconv.Itoa(i)))
